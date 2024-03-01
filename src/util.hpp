@@ -11,6 +11,7 @@
 #include <exception>
 #include <fstream>
 #include <vector>
+#include <mutex>
 
 #include "log.hpp"
 
@@ -24,6 +25,9 @@ enum CACHE_MODE {
     CACHE_EXIST_EXPIRED = 11,
     CACHE_EXIST_NONVALID = 12,
     CACHE_EXIST_VALID = 13,
+    CACHE_NOT_CACHEABLE = 14,
+    CACHE_WILL_EXPIRE = 15,
+    CACHE_REQUIRE_REVALIDATION = 16
 };
 
 /**
@@ -44,12 +48,14 @@ const char * const HTTP_RESPONSE_200 = "HTTP/1.1 200 OK\r\n\r\n";
 const char * const HTTP_RESPONSE_200_TAILED = "HTTP/1.1 200 OK";
 const char * const HTTP_RESPONSE_400 = "HTTP/1.1 400 Bad Request\r\n\r\n";
 const char * const HTTP_RESPONSE_400_TAILED = "HTTP/1.1 400 Bad Request";
+const char * const HTTP_RESPONSE_502 = "HTTP/1.1 502 Bad Gateway\r\n\r\n";
+const char * const HTTP_RESPONSE_502_TAILED = "HTTP/1.1 502 Bad Gateway";
 
 /* request tag */
 const char * const HOST_TAG = "Host";
 const char * const USER_AGENT_TAG = "User-Agent";
-const char * const PROXY_CONNECT_TAG = "Proxy-Connection";
 const char * const CONNECTION_TAG = "Connection";
+const char * const IF_NONE_MATCH_TAG = "If-None-Match";
 
 /* response tag */
 const char * const DATE_TAG = "Date";
@@ -61,6 +67,7 @@ const char * const CONTENT_LENGTH_TAG = "Content-Length";
 
 /* request connection tag */
 const char * const KEEP_ALIVE_TAG = "keep-alive";
+const char * const CLOSE_TAG = "close";
 
 /* Transfer-Encoding mode */
 const char * const ENCODING_CHUNKED = "chunked";
@@ -92,32 +99,24 @@ const char * const ERROR_TAG = "ERROR";
 const char * const WARNING_TAG = "WARNING";
 
 /* default logfile path */
-const char * const LOGFILE_DEFAULT = "proxy.log";
+const char * const LOGFILE_DEFAULT = "/var/log/erss/proxy.log";
 
 /* default port number */
-const char * const DEFAULT_PORT = "80";
+const char * const DEFAULT_HTTP_PORT = "80";
+const char * const DEFAULT_HTTPS_PORT = "443";
 
 class ThreadSafeIdGenerator {
 private:
     int id;
-    pthread_mutex_t mutex_id;
+    std::mutex mutex_id;
 
 public:
-    ThreadSafeIdGenerator() : id(139) {
-        pthread_mutex_init(&mutex_id, NULL);
-    }
-
-    ~ThreadSafeIdGenerator() {
-        pthread_mutex_destroy(&mutex_id);
-    }
-
+    ThreadSafeIdGenerator() : id(139) {}
     void increment() {
-        pthread_mutex_lock(&mutex_id);
         id++;
-        pthread_mutex_unlock(&mutex_id);
     }
-
     int get_id() {
+        std::lock_guard<std::mutex> lock(mutex_id);
         increment();
         return id;
     }
@@ -242,6 +241,7 @@ public:
 };
 
 std::string getIpaddress(struct sockaddr_storage* addr_storage);
+std::string getIpaddress(const char * hostname);
 bool endsWith(const std::string& fullString, const std::string& ending);
 void printVectorData(const std::vector<char>& data);
 

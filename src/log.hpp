@@ -4,6 +4,7 @@
 #include<iostream>
 #include<fstream>
 #include<ctime>
+#include<mutex>
 
 /* no-id tag */
 const int NO_ID = -10;
@@ -12,6 +13,7 @@ class Log {
 private:
     std::string filepath;
     std::ofstream logstream;
+    std::mutex mutex_log;
 public:
     Log();
     Log(std::string filepath);
@@ -21,7 +23,8 @@ public:
     std::string getCurrentTime();
     void write(std::string msg);
     void logRequest(int id, std::string from_ip, std::string request);
-    void logCache(int id, int cache_mode, std::string expired_time);
+    void logRequestInCache(int id, int cache_mode, std::string expired_time);
+    void logResponseInCache(int id, int cache_mode, std::string reason, std::string expired_time);
     void logContactToServerAboutRequest(int id, std::string to_hostname, std::string request);
     void logResponseFromServer(int id, std::string to_hostname, std::string response);
     void logRespondingToClient(int id, std::string response);

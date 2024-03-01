@@ -3,10 +3,11 @@
 
 Response::Response() : status(-1), max_age(-1), isChunked(false), contentLength(-1), cache_mode(CACHE_NORMAL) {}
 Response::Response(std::string httpResponse) : httpResponse(httpResponse), status(-1), max_age(-1), isChunked(false), contentLength(-1), cache_mode(CACHE_NORMAL) {}
-Response::Response(const Response & rhs) : httpResponse(rhs.httpResponse), responseHeader(rhs.responseHeader), responseBody(rhs.responseBody), date(rhs.date), status(rhs.status), max_age(rhs.max_age), isChunked(rhs.isChunked), contentLength(rhs.contentLength), Etag(rhs.Etag), LastModified(rhs.LastModified), Expires(rhs.Expires), cache_mode(rhs.cache_mode) {}
+Response::Response(const Response & rhs) : httpResponse(rhs.httpResponse), responseLine(rhs.responseLine), responseHeader(rhs.responseHeader), responseBody(rhs.responseBody), date(rhs.date), status(rhs.status), max_age(rhs.max_age), isChunked(rhs.isChunked), contentLength(rhs.contentLength), CacheControl(rhs.CacheControl), Etag(rhs.Etag), LastModified(rhs.LastModified), Expires(rhs.Expires), cache_mode(rhs.cache_mode), expireTime(rhs.expireTime) {}
 Response & Response::operator=(const Response & rhs) {
     if (this != &rhs) {
         httpResponse = rhs.httpResponse;
+        responseLine = rhs.responseLine;
         responseHeader = rhs.responseHeader;
         responseBody = rhs.responseBody;
         date = rhs.date;
@@ -14,10 +15,12 @@ Response & Response::operator=(const Response & rhs) {
         max_age = rhs.status;
         isChunked = rhs.isChunked;
         contentLength = rhs.contentLength;
+        CacheControl = rhs.CacheControl;
         Etag = rhs.Etag;
         LastModified = rhs.LastModified;
         Expires = rhs.Expires;
         cache_mode = rhs.cache_mode;
+        expireTime = rhs.expireTime;
     }
     return *this;
 }
@@ -28,41 +31,52 @@ void Response::seperateHeaderAndBody(std::string httpResponse) {
     responseBody = httpResponse.substr(sep+4);
 }
 void Response::parse() {
-    seperateHeaderAndBody(httpResponse);
-    std::istringstream stream(responseHeader);
-    std::string line;
-    bool firstLine = true;
+    try {
+        seperateHeaderAndBody(httpResponse);
+        std::istringstream stream(responseHeader);
+        std::string line;
+        bool firstLine = true;
 
-    while(getline(stream, line)){
-        if (!line.empty() && line.back() == '\r'){ 
-            line.pop_back();
+        while(getline(stream, line)) {
+            
+            if (!line.empty() && line.back() == '\r'){ 
+                line.pop_back();
+            }
+            if (firstLine){
+                setResponseLine(line);
+                setStatus(line);
+                firstLine = false;
+            }
+            if (line.substr(0, strlen(DATE_TAG)) == DATE_TAG) {
+                setDate(line);
+            }
+            if (line.substr(0, strlen(EXPIRE_TAG)) == EXPIRE_TAG) {
+                setExpire(line);
+            }
+            if (line.substr(0, strlen(ETAG_TAG)) == ETAG_TAG) {
+                setEtag(line);
+            }
+            if (line.substr(0, strlen(LAST_MODIFIED_TAG)) == LAST_MODIFIED_TAG) {
+                setLastModified(line);
+            }
+            if (line.substr(0, strlen(CACHE_CONTROL_TAG)) == CACHE_CONTROL_TAG) {
+                setCacheControl(line);
+            }
+            if (line.substr(0, strlen(TRANSFER_ENCODING_TAG)) == TRANSFER_ENCODING_TAG) {
+                setTransferEncoding(line);
+            }
+            if (line.substr(0, strlen(CONTENT_LENGTH_TAG)) == CONTENT_LENGTH_TAG) {
+                setContentLength(line);
+            }
         }
-        if (firstLine){
-            setStatus(line);
-            firstLine = false;
-        }
-        if (line.substr(0, strlen(DATE_TAG)) == DATE_TAG) {
-            setDate(line);
-        }
-        if (line.substr(0, strlen(EXPIRE_TAG)) == EXPIRE_TAG) {
-            setExpire(line);
-        }
-        if (line.substr(0, strlen(ETAG_TAG)) == ETAG_TAG) {
-            setEtag(line);
-        }
-        if (line.substr(0, strlen(LAST_MODIFIED_TAG)) == LAST_MODIFIED_TAG) {
-            setLastModified(line);
-        }
-        if (line.substr(0, strlen(CACHE_CONTROL_TAG)) == CACHE_CONTROL_TAG) {
-            setCacheControl(line);
-        }
-        if (line.substr(0, strlen(TRANSFER_ENCODING_TAG)) == TRANSFER_ENCODING_TAG) {
-            setTransferEncoding(line);
-        }
-        if (line.substr(0, strlen(CONTENT_LENGTH_TAG)) == CONTENT_LENGTH_TAG) {
-            setContentLength(line);
-        }
+
+        setExpiredTime();
+    } catch (std::exception & e) {
+        std::cout << e.what() << std::endl;
     }
+}
+void Response::setResponseLine(std::string line) {
+    responseLine = line;
 }
 void Response::setDate(std::string line) {
     date = line.substr(line.find(":")+2);
@@ -83,18 +97,25 @@ void Response::setTransferEncoding(std::string line) {
     }
 }
 void Response::setCacheControl(std::string line) {
+    CacheControl = line;
+
     // max-age
-    if (size_t pos = line.find(RESPONSE_CACHE_DIRECTIVE_MAXAGE) != std::string::npos) {
-        if (size_t sep = line.substr(pos+2).find(",") != std::string::npos) {
-            max_age = atoi(line.substr(pos+2, sep-pos-1).c_str());
+    size_t pos1 = line.find(RESPONSE_CACHE_DIRECTIVE_MAXAGE);
+    if (pos1 != std::string::npos) {
+        size_t sep1 = line.substr(pos1+2).find(",");
+        if (sep1 != std::string::npos) {
+            max_age = atoi(line.substr(pos1+strlen(RESPONSE_CACHE_DIRECTIVE_MAXAGE)+1, sep1-pos1-strlen(RESPONSE_CACHE_DIRECTIVE_MAXAGE)-1).c_str());
         } else {
-            max_age = atoi(line.substr(pos+2).c_str());
+            max_age = atoi(line.substr(pos1+strlen(RESPONSE_CACHE_DIRECTIVE_MAXAGE)+1).c_str());
         }
-    } else if (size_t pos = line.find(RESPONSE_CACHE_DIRECTIVE_SMAXAGE) != std::string::npos) {
-        if (size_t sep = line.substr(pos+2).find(",") != std::string::npos) {
-            max_age = atoi(line.substr(pos+2, sep-pos-1).c_str());
+    }
+    size_t pos2 = line.find(RESPONSE_CACHE_DIRECTIVE_SMAXAGE);
+    if (pos2 != std::string::npos) {
+        size_t sep2 = line.substr(pos2+2).find(",");
+        if (sep2 != std::string::npos) {
+            max_age = atoi(line.substr(pos2+strlen(RESPONSE_CACHE_DIRECTIVE_SMAXAGE)+1, sep2-pos2-strlen(RESPONSE_CACHE_DIRECTIVE_SMAXAGE)-1).c_str());
         } else {
-            max_age = atoi(line.substr(pos+2).c_str());
+            max_age = atoi(line.substr(pos2+strlen(RESPONSE_CACHE_DIRECTIVE_SMAXAGE)+1).c_str());
         }
     }
 
@@ -132,4 +153,82 @@ void Response::addResponseBody(std::vector<char> & responseChunkedBody) {
 }
 void Response::addResponseBody(std::string responseStringBody) {
     responseBody += responseStringBody;
+}
+bool Response::isValid() {
+    if (!httpResponse.empty()) {
+        if (httpResponse.find("\r\n\r\n") == std::string::npos) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+long long Response::timeDifferenceInSeconds(std::string last_modified, std::string now) {
+    std::tm tm_last_modified = {};
+    std::tm tm_now = {};
+    std::istringstream ss_last_modified(last_modified);
+    ss_last_modified >> std::get_time(&tm_last_modified, "%a, %d %b %Y %H:%M:%S GMT");
+    
+    // Parse now date
+    std::istringstream ss_now(now);
+    ss_now >> std::get_time(&tm_now, "%a, %d %b %Y %H:%M:%S GMT");
+    
+    // Convert to time_t
+    auto time_t_last_modified = std::mktime(&tm_last_modified);
+    auto time_t_now = std::mktime(&tm_now);
+    
+    // Convert to chrono::system_clock::time_point
+    auto tp_last_modified = std::chrono::system_clock::from_time_t(time_t_last_modified);
+    auto tp_now = std::chrono::system_clock::from_time_t(time_t_now);
+    
+    // Calculate difference
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(tp_now - tp_last_modified).count();
+    return duration;
+}
+void Response::setExpiredTime() {
+    if (max_age != -1) {
+        std::tm tm = {};
+        std::istringstream ss(date);
+        std::stringstream res;
+
+        ss >> std::get_time(&tm, "%a, %d %b %Y %H:%M:%S GMT");
+        auto time_c = std::mktime(&tm);
+        std::chrono::system_clock::time_point responseDate_chrono = std::chrono::system_clock::from_time_t(time_c);
+        std::chrono::system_clock::time_point expiredTime_chrono = responseDate_chrono + std::chrono::seconds(max_age);
+        
+        std::time_t finalExpiredTime = std::chrono::system_clock::to_time_t(expiredTime_chrono);
+        std::tm* gmtTime = std::gmtime(&finalExpiredTime);
+        res << std::put_time(gmtTime, "%a, %d %b %Y %H:%M:%S GMT");
+
+        expireTime = res.str();
+        return;
+    }
+    if (!Expires.empty()) {
+        expireTime = Expires;
+        return;
+    }
+    
+    // heuristic caching
+    // add 10% of time difference to expired time
+    if (cache_mode != CACHE_NO_STORE && !LastModified.empty() && !date.empty()) {
+        std::tm tm = {};
+        std::istringstream ss(date);
+        std::stringstream res;
+
+        ss >> std::get_time(&tm, "%a, %d %b %Y %H:%M:%S GMT");
+        auto time_c = std::mktime(&tm);
+        std::chrono::system_clock::time_point responseDate_chrono = std::chrono::system_clock::from_time_t(time_c);
+        
+        // calculate seconds for 0.1 of time difference
+        auto time_difference = timeDifferenceInSeconds(LastModified, date);
+        auto seconds_to_add = static_cast<int>(0.1 * time_difference);
+
+        std::chrono::system_clock::time_point expiredTime_chrono = responseDate_chrono + std::chrono::seconds(seconds_to_add);
+
+        std::time_t finalExpiredTime = std::chrono::system_clock::to_time_t(expiredTime_chrono);
+        std::tm* gmtTime = std::gmtime(&finalExpiredTime);
+        res << std::put_time(gmtTime, "%a, %d %b %Y %H:%M:%S GMT");
+
+        expireTime = res.str();
+    }
 }

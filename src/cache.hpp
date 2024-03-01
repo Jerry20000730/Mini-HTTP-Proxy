@@ -5,6 +5,7 @@
 #include "response.hpp"
 #include <list>
 #include <unordered_map>
+#include <memory>
 
 using namespace std;
 
@@ -19,13 +20,12 @@ private:
     size_t capacity;
     list<CacheItem> cacheList;
     unordered_map<string, list<CacheItem>::iterator> cacheMap;
+    std::mutex mutex_cache;
 public:
     LRUCache(size_t capacity) : capacity(capacity) {}
-    Response * get(string ip);
-    //insert or update
-    void put(string ip, Response response);
-    bool isCacheExpired(string responseDate, int maxAge);
-    bool validate(Response response);
+    Response * get(string ip, int * cache_res);
+    void put(string ip, Response response, std::unique_ptr<Log>& log);
+    bool isCacheExpired(Response response);
 };
 
 #endif

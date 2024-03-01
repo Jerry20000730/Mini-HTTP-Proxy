@@ -2,7 +2,7 @@
 #include "util.hpp"
 
 Request::Request(std::string httpRequest) : httpRequest(httpRequest) {}
-Request::Request(const Request & rhs) : httpRequest(rhs.httpRequest), method(rhs.method), requestLine(rhs.requestLine), hostname(rhs.hostname), userAgent(rhs.userAgent), url(rhs.url), proxy_connection(rhs.proxy_connection), connection(rhs.connection), port(rhs.port) {}
+Request::Request(const Request & rhs) : httpRequest(rhs.httpRequest), method(rhs.method), requestLine(rhs.requestLine), hostname(rhs.hostname), userAgent(rhs.userAgent), url(rhs.url), proxy_connection(rhs.proxy_connection), connection(rhs.connection), port(rhs.port), IfNoneMatch(rhs.IfNoneMatch), IfModifiedSince(rhs.IfModifiedSince) {}
 Request & Request::operator=(const Request & rhs) {
     if (this != &rhs) {
         httpRequest = rhs.httpRequest;
@@ -14,6 +14,8 @@ Request & Request::operator=(const Request & rhs) {
         proxy_connection = rhs.proxy_connection;
         connection = rhs.connection;
         port = rhs.port;
+        IfNoneMatch = rhs.IfNoneMatch;
+        IfModifiedSince = rhs.IfModifiedSince;
     }
     return (*this);
 }
@@ -25,7 +27,7 @@ void Request::parse(){
     bool firstLine = true;
 
     while(getline(stream, line)){
-        if (!line.empty()&&line.back() == '\r'){ 
+        if (!line.empty() && line.back() == '\r'){ 
             //remove \r
             line.pop_back();
         }
@@ -38,9 +40,6 @@ void Request::parse(){
         }
         else if (line.substr(0, strlen(USER_AGENT_TAG)) == USER_AGENT_TAG){
             setUserAgent(line);
-        }
-        else if (line.substr(0, strlen(PROXY_CONNECT_TAG)) == PROXY_CONNECT_TAG){
-            setProxyConnection(line);
         }
         else if (line.substr(0, strlen(CONNECTION_TAG)) == CONNECTION_TAG) {
             setConnection(line);
@@ -74,6 +73,35 @@ void Request::setConnection(std::string line){
     connection = line.substr(line.find(":") + 2);
 }
 
-void Request::setProxyConnection(std::string line){
-    proxy_connection = line.substr(line.find(":") + 2);
+std::string Request::transfromToRequestInString() {
+    std::string newRequestString;
+
+    // Start with the request line
+    newRequestString += this->requestLine + "\r\n";
+
+    // Add headers
+    if (!this->hostname.empty()) {
+        newRequestString += std::string(HOST_TAG) + ": " + this->hostname;
+        if (!this->port.empty()) {
+            newRequestString += ":" + this->port;
+        }
+        newRequestString += "\r\n";
+    }
+    
+    if (!this->userAgent.empty()) {
+        newRequestString += std::string(USER_AGENT_TAG) + ": " + this->userAgent + "\r\n";
+    }
+    
+    if (!this->connection.empty()) {
+        newRequestString += std::string(CONNECTION_TAG) + ": " + this->connection + "\r\n";
+    }
+    
+    if (!this->IfNoneMatch.empty()) {
+        newRequestString += std::string(IF_NONE_MATCH_TAG) + ": " + this->IfNoneMatch + "\r\n";
+    }
+
+    // End with an empty line to conclude the header section
+    newRequestString += "\r\n";
+
+    return newRequestString;
 }

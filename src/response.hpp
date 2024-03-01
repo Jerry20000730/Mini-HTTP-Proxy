@@ -7,10 +7,14 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <ctime>
+#include <chrono>
+#include <iomanip> 
 
 class Response {
 public:
     std::string httpResponse;
+    std::string responseLine;
     std::string responseHeader;
     std::string responseBody;
     std::string date;
@@ -18,10 +22,12 @@ public:
     int max_age;
     bool isChunked;
     int contentLength;
+    std::string CacheControl;
     std::string Etag;
     std::string LastModified;
     std::string Expires;
     int cache_mode;
+    std::string expireTime;
 
     Response();
     Response(std::string httpResponse);
@@ -41,6 +47,9 @@ public:
     void seperateHeaderAndBody(std::string httpResponse);
     void addResponseBody(std::vector<char> & responseChunkedBody);
     void addResponseBody(std::string responseStringBody);
+    bool isValid();
+    long long timeDifferenceInSeconds(std::string last_modified, std::string now);
+    void setExpiredTime();
     void parse();
 };
 

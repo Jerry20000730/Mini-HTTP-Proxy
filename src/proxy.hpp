@@ -7,10 +7,16 @@
 #include <cstring>
 #include <vector>
 #include <unistd.h>
-#include <pthread.h>
+#include <memory>
+#include <mutex>
+#include <thread>
+#include <atomic>
+#include <csignal>
 
 #include "cache.hpp"
 #include "log.hpp"
+#include "request.hpp"
+#include "response.hpp"
 
 struct _info {
     int id;
@@ -25,45 +31,46 @@ typedef struct _info info;
 class Proxy {
 public:
     int port;
-    static LRUCache * cache;
-    static Log * log;
+    std::unique_ptr<LRUCache> cache;
+    std::unique_ptr<Log> log;
 
     // rule of three
     Proxy(int port);
-    Proxy(const Proxy & rhs);
-    Proxy & operator=(const Proxy & rhs);
     ~Proxy();
 
     // main function
-    static void * task(void * info);
+    void * task(void * info);
     void run();
 
     // server start function
-    static int initServer(const char * port);
-    static void acceptConnection(int * socket_fd, int * connect_fd, std::string * ip);
+    int initServer(const char * port);
+    void acceptConnection(int * socket_fd, int * connect_fd, std::string * ip);
 
     // client start function
-    static int initClient(const char * hostname, const char * port);
+    int initClient(const char * hostname, const char * port, std::string method);
 
     // request / response send/recv functions
-    static std::string recvClientRequest(int * connect_fd);
-    static void sendRequestToServer(int * socket_fd, std::string request);
-    static void sendResponseToClient(int * socket_fd, std::vector<char> & response);
-    static void recvServerResponse(int * server_fd, int * client_fd, Response * response);
-    static std::vector<char> recvServerChunkedResponse(int * server_fd, int * client_fd);
+    std::string recvClientRequest(int * connect_fd);
+    void sendRequestToServer(int * socket_fd, std::string request);
+    void sendResponseToClient(int * socket_fd, std::vector<char> & response);
+    void sendResponseToClient(int * socket_fd, Response * response);
+    void recvServerResponse(int * server_fd, int * client_fd, Response * response);
+    std::vector<char> recvServerChunkedResponse(int * server_fd, int * client_fd);
     
     // process request
-    static void processConnect(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
-    static void processGet(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
-    static void processPost(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id); 
+    void processConnect(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
+    void processGet(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, std::string * url, int id);
+    // static void processLongGet(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
+    void processPost(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
+    bool revalidateResponse(int * client_fd, int * server_fd, Response * response, Request request);
     
     // encapsulated socket functions
-    static void init(const char * hostname, const char * port, struct addrinfo * host_info, struct addrinfo ** host_info_list, int type);
-    static void createSocket(int * fd, struct addrinfo ** host_info_list, int type);
-    static void connect(int * fd, struct addrinfo ** host_info_list);
-    static void bind(int * fd, struct addrinfo ** host_info_list);
-    static void listen(int * fd);
-    static void accept(int * socket_fd, int * connect_fd, sockaddr_storage * accept_socket_addr);
+    void init(const char * hostname, const char * port, struct addrinfo * host_info, struct addrinfo ** host_info_list, int type);
+    void createSocket(int * fd, struct addrinfo ** host_info_list, int type);
+    void connect(int * fd, struct addrinfo ** host_info_list);
+    void bind(int * fd, struct addrinfo ** host_info_list);
+    void listen(int * fd);
+    void accept(int * socket_fd, int * connect_fd, sockaddr_storage * accept_socket_addr);
 };
 
 #endif

@@ -1,0 +1,23 @@
+Danger Log
+
+## Bugs encountered and our solution
+
+1. Client file descriptor in the thread should set as thread local, and belongs to the thread
+2. Client file descriptor should be set to -1, otherwise it will by default set to 0, and if we close this (at the end of the execution), it will close 0, which is not acceptable 
+3. Potential malfunction if the response is empty, trying to reply with 502 or 500
+4. We implemented different sources of exception, so that when debugging, we know which step is wrong during the socket establishment
+5. Potential malfunction if the response from the server is corrupted
+6. When sending chunks, the wrapped receiveResponseFromServer function on proxy is slow (not sure why)
+
+7. Some response may not come with valid max-age, or Expires, according to the heuristic caching, it should be stored, but I don't know what will be the policy for this "heuristic". According to Documentation How long to reuse is up to the implementation, but the specification recommends about 10% (in this case if the difference between two time is 1 year) of the time after storing
+8. What if there is no date? It will not calculate the expired time, or return 400, 500?
+9. keep-alive may not maintain the tcp tunnel open?
+10. how to do tunnel close?
+11. What should we do if browser response 304 or 206?
+
+## Potential problems
+1. High QPS: Although proxy supports multi-threading, if the query is too much, the proxy server might not be able to generate threads so quickly
+2. Memory of proxy cache: since the proxy stores its cache in the memory, if there are so many queries simultaneouly and they all happened to be cached in the memory, the memory might be full (although we use LRU strategy to reduce this possibility, but we cannot predict the size of a single response)
+3. Unmet exception: although we have covered many aspects of exception, there might be exceptions that will break the system potentially
+4. 
+

@@ -18,6 +18,8 @@ public:
     std::string proxy_connection;
     std::string connection;
     std::string port;
+    std::string IfNoneMatch;
+    std::string IfModifiedSince;
 
     Request(std::string httpRequest);
     Request(const Request & rhs);
@@ -26,9 +28,9 @@ public:
     void setRequestLine(std::string line);
     void setHostnameAndPort(std::string line);
     void setUserAgent(std::string line);
-    void setProxyConnection(std::string line);
     void setConnection(std::string line);
-    void setKeepAlive(std::string line);
+    std::string transfromToRequestInString();
+    bool isValid();
     void parse();
 };
 #endif
