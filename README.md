@@ -20,12 +20,14 @@ go to `src` and make. After that, simply run
 
 ## Docker support
 The structure of the current project is:
+```plaintext
 Mini-HTTP-Proxy
    |—docker-compose.yml
    |—src
        |—Dockerfile
        |—main.c
        |-other source files ...
+```
 
 To run the project, simply run
 ```
@@ -35,4 +37,3 @@ or
 ```
 sudo docker compose up
 ```
-if the docker compose version is larger than 3
