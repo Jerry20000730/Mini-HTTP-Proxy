@@ -18,4 +18,21 @@ go to `src` and make. After that, simply run
 ./main
 ```
 
-## Docker support (in progress)
+## Docker support
+The structure of the current project is:
+Mini-HTTP-Proxy
+   |—docker-compose.yml
+   |—src
+       |—Dockerfile
+       |—main.c
+       |-other source files ...
+
+To run the project, simply run
+```
+sudo docker-compose up
+```
+or
+```
+sudo docker compose up
+```
+if the docker compose version is larger than 3
