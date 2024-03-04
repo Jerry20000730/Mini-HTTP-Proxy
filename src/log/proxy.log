@@ -1,0 +1,134 @@
+140: "GET http://detectportal.firefox.com/canonical.html HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:30:27 2024
+140: not in cache
+140: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/1.1" from detectportal.firefox.com
+140: Received "HTTP/1.1 200 OK" from detectportal.firefox.com
+140: NOTE Cache-Control: public,must-revalidate,max-age=0,s-maxage=3600
+140: cached, expires at Fri, 01 Mar 2024 10:09:48 GMT
+140: Responding "HTTP/1.1 200 OK"
+141: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:30:28 2024
+141: not in cache
+141: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/1.1" from detectportal.firefox.com
+141: Received "HTTP/1.1 200 OK" from detectportal.firefox.com
+141: NOTE Cache-Control: public,must-revalidate,max-age=0,s-maxage=3600
+141: cached, expires at Fri, 01 Mar 2024 08:38:30 GMT
+141: Responding "HTTP/1.1 200 OK"
+150: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:30:28 2024
+150: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+162: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:30:28 2024
+162: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+199: "GET http://detectportal.firefox.com/canonical.html HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:31:27 2024
+199: in cache, but expired at Fri, 01 Mar 2024 10:09:48 GMT
+199: Requesting "GET http://detectportal.firefox.com/canonical.html HTTP/1.1" from detectportal.firefox.com
+199: Received "HTTP/1.1 200 OK" from detectportal.firefox.com
+199: NOTE Cache-Control: public,must-revalidate,max-age=0,s-maxage=3600
+199: cached, expires at Fri, 01 Mar 2024 07:12:46 GMT
+199: Responding "HTTP/1.1 200 OK"
+200: "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:31:28 2024
+200: in cache, but expired at Fri, 01 Mar 2024 08:38:30 GMT
+200: Requesting "GET http://detectportal.firefox.com/success.txt?ipv4 HTTP/1.1" from detectportal.firefox.com
+200: Received "HTTP/1.1 200 OK" from detectportal.firefox.com
+200: NOTE Cache-Control: public,must-revalidate,max-age=0,s-maxage=3600
+200: cached, expires at Fri, 01 Mar 2024 13:03:50 GMT
+200: Responding "HTTP/1.1 200 OK"
+150: Responding "HTTP/1.1 408 Request Timeout"
+201: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:31:28 2024
+201: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+162: Responding "HTTP/1.1 408 Request Timeout"
+202: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:31:29 2024
+202: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+201: Responding "HTTP/1.1 408 Request Timeout"
+204: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:32:29 2024
+204: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+202: Responding "HTTP/1.1 408 Request Timeout"
+205: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:32:29 2024
+205: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+206: "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:32:49 2024
+206: not in cache
+206: Requesting "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from vcm-38043.vm.duke.edu
+206: Received "HTTP/1.1 200 OK" from vcm-38043.vm.duke.edu
+206: cached, expires at 
+206: Responding "HTTP/1.1 200 OK"
+207: "GET http://vcm-38043.vm.duke.edu:5000/favicon.ico HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:32:49 2024
+207: not in cache
+207: Requesting "GET http://vcm-38043.vm.duke.edu:5000/favicon.ico HTTP/1.1" from vcm-38043.vm.duke.edu
+207: Received "HTTP/1.1 404 NOT FOUND" from vcm-38043.vm.duke.edu
+207: ERROR HTTP/1.1 404 NOT FOUND
+207: Responding "HTTP/1.1 404 NOT FOUND"
+205: Responding "HTTP/1.1 408 Request Timeout"
+204: Responding "HTTP/1.1 408 Request Timeout"
+209: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:33:29 2024
+209: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+210: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:33:30 2024
+210: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+211: "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:33:58 2024
+211: in cache, but expired at 
+211: Requesting "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from vcm-38043.vm.duke.edu
+211: Received "HTTP/1.1 304 NOT MODIFIED" from vcm-38043.vm.duke.edu
+211: NOTE browser cached the website: HTTP/1.1 304 NOT MODIFIED
+211: Responding "HTTP/1.1 304 NOT MODIFIED"
+212: "GET http://vcm-38043.vm.duke.edu:5000/favicon.ico HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:33:58 2024
+212: not in cache
+212: Requesting "GET http://vcm-38043.vm.duke.edu:5000/favicon.ico HTTP/1.1" from vcm-38043.vm.duke.edu
+212: Received "HTTP/1.1 404 NOT FOUND" from vcm-38043.vm.duke.edu
+212: ERROR HTTP/1.1 404 NOT FOUND
+212: Responding "HTTP/1.1 404 NOT FOUND"
+209: Responding "HTTP/1.1 408 Request Timeout"
+213: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:34:30 2024
+213: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+210: Responding "HTTP/1.1 408 Request Timeout"
+214: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:34:30 2024
+214: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+213: Responding "HTTP/1.1 408 Request Timeout"
+225: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:35:30 2024
+225: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+214: Responding "HTTP/1.1 408 Request Timeout"
+226: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:35:31 2024
+226: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+225: Responding "HTTP/1.1 408 Request Timeout"
+228: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:36:31 2024
+228: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+226: Responding "HTTP/1.1 408 Request Timeout"
+229: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:36:32 2024
+229: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+228: Responding "HTTP/1.1 408 Request Timeout"
+229: Responding "HTTP/1.1 408 Request Timeout"
+230: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:37:32 2024
+230: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+231: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:37:32 2024
+231: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+231: Responding "HTTP/1.1 408 Request Timeout"
+232: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:38:32 2024
+232: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+230: Responding "HTTP/1.1 408 Request Timeout"
+233: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:38:33 2024
+233: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+233: Responding "HTTP/1.1 408 Request Timeout"
+232: Responding "HTTP/1.1 408 Request Timeout"
+234: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:39:33 2024
+235: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:39:33 2024
+235: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+234: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+235: Responding "HTTP/1.1 408 Request Timeout"
+234: Responding "HTTP/1.1 408 Request Timeout"
+248: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:52:53 2024
+248: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+249: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:52:53 2024
+249: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+249: Responding "HTTP/1.1 408 Request Timeout"
+250: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:53:53 2024
+250: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+248: Responding "HTTP/1.1 408 Request Timeout"
+251: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:53:54 2024
+251: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+250: Responding "HTTP/1.1 408 Request Timeout"
+262: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:54:53 2024
+262: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+251: Responding "HTTP/1.1 408 Request Timeout"
+263: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:54:54 2024
+263: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+262: Responding "HTTP/1.1 408 Request Timeout"
+264: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:55:54 2024
+264: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com
+263: Responding "HTTP/1.1 408 Request Timeout"
+265: "POST http://ocsp.digicert.com/ HTTP/1.1" from 76.36.244.8 @ Fri Mar 01 18:55:55 2024
+265: Requesting "POST http://ocsp.digicert.com/ HTTP/1.1" from ocsp.digicert.com

@@ -1,11 +1,22 @@
 version: '2'
 
 services:
-  main:
-    build: ./src
+  # main:
+  #   build: ./src
+  #   user: root
+  #   command: bash -c "make && chmod +x main && ./main"
+  #   volumes:
+  #     - ./src/log:/var/log/erss
+  #   ports:
+  #     - "12345:12345"
+  #   depends_on:
+  #       - test-web
+  test-web:
+    build: ./test
     user: root
-    command: bash -c "make && chmod +x main && ./main"
-    volumes:
-      - ./src/log:/var/log/erss
     ports:
-      - "12345:12345"
+      - "5000:5000"
+    volumes:
+      - ./test:/test
+    environment:
+      FLASK_DEBUG: "true"

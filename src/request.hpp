@@ -29,6 +29,7 @@ public:
     void setHostnameAndPort(std::string line);
     void setUserAgent(std::string line);
     void setConnection(std::string line);
+    // void setCacheControl(std::string line);
     std::string transfromToRequestInString();
     bool isValid();
     void parse();

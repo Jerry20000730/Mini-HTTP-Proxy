@@ -99,3 +99,12 @@ void Log::logError(int id, std::string error_content) {
     }
     write(ss.str());
 }
+void Log::logTunnelClosed(int id) {
+    std::ostringstream ss;
+    if (id == -1) {
+        ss << "(no-id): " << "tunnel closed";
+    } else {
+        ss << id << ": " << "tunnel closed";
+    }
+    write(ss.str());
+}

@@ -72,21 +72,21 @@ void * Proxy::task(void * thread_info) {
         }
         Request requestParameter(request);
         requestParameter.parse();
-        // log->logRequest(args->id, args->ip, requestParameter.requestLine);
+        log->logRequest(args->id, args->ip, requestParameter.requestLine);
 
         if (requestParameter.method == "CONNECT") {
-            // client_socket_fd = initClient(requestParameter.hostname.c_str(), requestParameter.port.c_str(), requestParameter.method);
-            // if (client_socket_fd <= 0) {
-            //     std::string msg = "Connection to the " + requestParameter.hostname + " failed";
-            //     log->logError(args->id, msg);
-            //     close(client_socket_fd);
-            //     close(args->server_connect_fd);
-            //     return NULL;
-            // }
-            // log->logContactToServerAboutRequest(args->id, requestParameter.hostname, requestParameter.requestLine);
-            // processConnect(&args->server_connect_fd, &client_socket_fd, &args->ip, &requestParameter.hostname, args->id);
+            client_socket_fd = initClient(requestParameter.hostname.c_str(), requestParameter.port.c_str(), requestParameter.method);
+            if (client_socket_fd <= 0) {
+                std::string msg = "Connection to the " + requestParameter.hostname + " failed";
+                log->logError(args->id, msg);
+                close(client_socket_fd);
+                close(args->server_connect_fd);
+                return NULL;
+            }
+            log->logContactToServerAboutRequest(args->id, requestParameter.hostname, requestParameter.requestLine);
+            processConnect(&args->server_connect_fd, &client_socket_fd, &args->ip, &requestParameter.hostname, args->id);
+            log->logTunnelClosed(args->id);
         } else if (requestParameter.method == "GET") {
-            log->logRequest(args->id, args->ip, requestParameter.requestLine);
             // find in the cache
             int cache_res;
             Response * res = nullptr;
@@ -123,7 +123,6 @@ void * Proxy::task(void * thread_info) {
             log->logContactToServerAboutRequest(args->id, requestParameter.hostname, requestParameter.requestLine);
             processGet(&args->server_connect_fd, &client_socket_fd, &args->ip, &requestParameter.hostname, &requestParameter.url, args->id);      
         } else if (requestParameter.method == "POST") {
-            log->logRequest(args->id, args->ip, requestParameter.requestLine);
             client_socket_fd = initClient(requestParameter.hostname.c_str(), requestParameter.port.c_str(), requestParameter.method);
             if (client_socket_fd <= 0) {
                 std::string msg = "Connection to the " + requestParameter.hostname + " failed";
@@ -250,11 +249,11 @@ void Proxy::recvServerResponse(int * server_fd, int * client_fd, Response * resp
     if (response->isChunked) {
         send(*client_fd, buffer, byte_count, 0);
         std::vector<char> response_chunked = recvServerChunkedResponse(server_fd, client_fd);
-        response->addResponseBody(response_chunked);
+        response->addResponseBody(&response_chunked);
     } else {
         if (response->contentLength > 65536) {
-            std::vector<char> response_chunked = recvServerChunkedResponse(server_fd, client_fd);
-            response->addResponseBody(response_chunked);
+            std::vector<char> response_chunked = recvServerLongResponse(server_fd);
+            response->addResponseBody(&response_chunked);
         } else {
             char buffer[65536];
             memset(buffer, 0, sizeof(buffer));
@@ -262,6 +261,26 @@ void Proxy::recvServerResponse(int * server_fd, int * client_fd, Response * resp
             response->addResponseBody(buffer);
         }
     }
+}
+
+std::vector<char> Proxy::recvServerLongResponse(int * server_fd) {
+    std::vector<char> response;
+    // Receiving the response
+    char buffer[4096];
+    memset(buffer, 0, 4096);
+    int byte_count = 0;
+
+    // Loop until there's no more data
+    while (true) {
+        memset(buffer, 0, 4096);
+        byte_count = recv(*server_fd, buffer, sizeof(buffer), 0);
+        if (byte_count <= 0) {
+            break;
+        }
+        response.insert(response.end(), buffer, buffer + byte_count);
+    }
+    std::cout << response.size() << std::endl;
+    return response;
 }
 
 std::vector<char> Proxy::recvServerChunkedResponse(int * server_fd, int * client_fd) {
@@ -293,7 +312,8 @@ void Proxy::sendResponseToClient(int * socket_fd, std::vector<char> & response) 
 }
 
 void Proxy::sendResponseToClient(int * socket_fd, Response * response) {
-    send(*socket_fd, response->httpResponse.c_str(), strlen(response->httpResponse.c_str()), MSG_NOSIGNAL);
+    std::cout << "size: " << response->httpResponse.size() << std::endl;
+    send(*socket_fd, response->httpResponse.c_str(), response->httpResponse.size(), MSG_NOSIGNAL);
 }
 
 void Proxy::processGet(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, std::string * url, int id) {
@@ -325,7 +345,9 @@ void Proxy::processGet(int * client_fd, int * server_fd, std::string * ip, std::
         log->logResponseInCache(id, CACHE_WILL_EXPIRE, "", res.expireTime);
     }
 
-    sendResponseToClient(client_fd, &res);
+    if (!res.isChunked) {
+        sendResponseToClient(client_fd, &res);
+    }
     log->logRespondingToClient(id, res.responseLine);
 }
 
@@ -393,9 +415,6 @@ void Proxy::processPost(int * client_fd, int * server_fd, std::string * ip, std:
 }
 
 bool Proxy::revalidateResponse(int * client_fd, int * server_fd, Response * response, Request request) {
-    if (response->Etag == ""){
-        return false;
-    }
     if (response->Etag != "") {
         request.IfNoneMatch = response->Etag;
     }
@@ -409,7 +428,7 @@ bool Proxy::revalidateResponse(int * client_fd, int * server_fd, Response * resp
     std::string validateRequest = request.transfromToRequestInString();
     std::cout << validateRequest << std::endl; 
     // send to server
-    send(*client_fd, validateRequest.c_str(), strlen(validateRequest.c_str()), 0);
+    send(*server_fd, validateRequest.c_str(), strlen(validateRequest.c_str()), 0);
 
     // wait for response
     char buffer[65536];
@@ -428,11 +447,11 @@ bool Proxy::revalidateResponse(int * client_fd, int * server_fd, Response * resp
     if (newResponse.isChunked) {
         send(*client_fd, buffer, byte_count, 0);
         std::vector<char> response_chunked = recvServerChunkedResponse(server_fd, client_fd);
-        newResponse.addResponseBody(response_chunked);
+        newResponse.addResponseBody(&response_chunked);
     } else {
         if (newResponse.contentLength > 65536) {
-            std::vector<char> response_chunked = recvServerChunkedResponse(server_fd, client_fd);
-            newResponse.addResponseBody(response_chunked);
+            std::vector<char> response_chunked = recvServerLongResponse(server_fd);
+            newResponse.addResponseBody(&response_chunked);
         } else {
             char buffer[65536];
             memset(buffer, 0, sizeof(buffer));

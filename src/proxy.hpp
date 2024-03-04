@@ -56,7 +56,7 @@ public:
     void sendResponseToClient(int * socket_fd, Response * response);
     void recvServerResponse(int * server_fd, int * client_fd, Response * response);
     std::vector<char> recvServerChunkedResponse(int * server_fd, int * client_fd);
-    
+    std::vector<char> recvServerLongResponse(int * server_fd);
     // process request
     void processConnect(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, int id);
     void processGet(int * client_fd, int * server_fd, std::string * ip, std::string * to_hostname, std::string * url, int id);

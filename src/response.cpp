@@ -148,11 +148,16 @@ void Response::setLastModified(std::string line) {
 void Response::setContentLength(std::string line) {
     contentLength = atoi(line.substr(line.find(":")+2).c_str());
 }
-void Response::addResponseBody(std::vector<char> & responseChunkedBody) {
-    responseBody += responseChunkedBody.data();
+void Response::addResponseBody(std::vector<char> * responseChunkedBody) {
+    if (responseChunkedBody != nullptr || responseBody.size() != 0) {
+        httpResponse = responseHeader + "\r\n\r\n" + responseBody;
+        responseBody.append(responseChunkedBody->data(), responseChunkedBody->size());
+        httpResponse.append(responseChunkedBody->data(), responseChunkedBody->size());
+    }
 }
 void Response::addResponseBody(std::string responseStringBody) {
     responseBody += responseStringBody;
+    httpResponse = responseHeader + "\r\n\r\n" + responseBody;
 }
 bool Response::isValid() {
     if (!httpResponse.empty()) {
@@ -206,6 +211,9 @@ void Response::setExpiredTime() {
     if (!Expires.empty()) {
         expireTime = Expires;
         return;
+    }
+    if (cache_mode == CACHE_MUST_REVALIDATE) {
+        expireTime = date;
     }
     
     // heuristic caching

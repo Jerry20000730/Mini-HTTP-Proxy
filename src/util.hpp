@@ -60,7 +60,7 @@ const char * const IF_NONE_MATCH_TAG = "If-None-Match";
 /* response tag */
 const char * const DATE_TAG = "Date";
 const char * const LAST_MODIFIED_TAG = "Last-Modified";
-const char * const ETAG_TAG = "ETag";
+const char * const ETAG_TAG = "Etag";
 const char * const EXPIRE_TAG = "Expires";
 const char * const TRANSFER_ENCODING_TAG = "Transfer-Encoding";
 const char * const CONTENT_LENGTH_TAG = "Content-Length";

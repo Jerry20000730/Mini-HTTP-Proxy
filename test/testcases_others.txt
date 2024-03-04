@@ -1,0 +1,286 @@
+---------------GET-------------------
+/* testcase: website get (1) */
+GET http://httpbin.org/forms/post HTTP/1.1
+Host: httpbin.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+Response:
+HTTP/1.1 200 OK
+Date: Sat, 02 Mar 2024 19:48:00 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 1397
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+  <!-- Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface -->
+  <form method="post" action="/post">
+   <p><label>Customer name: <input name="custname"></label></p>
+   <p><label>Telephone: <input type=tel name="custtel"></label></p>
+   <p><label>E-mail address: <input type=email name="custemail"></label></p>
+   <fieldset>
+    <legend> Pizza Size </legend>
+    <p><label> <input type=radio name=size value="small"> Small </label></p>
+    <p><label> <input type=radio name=size value="medium"> Medium </label></p>
+    <p><label> <input type=radio name=size value="large"> Large </label></p>
+   </fieldset>
+   <fieldset>
+    <legend> Pizza Toppings </legend>
+    <p><label> <input type=checkbox name="topping" value="bacon"> Bacon </label></p>
+    <p><label> <input type=checkbox name="topping" value="cheese"> Extra Cheese </label></p>
+    <p><label> <input type=checkbox name="topping" value="onion"> Onion </label></p>
+    <p><label> <input type=checkbox name="topping" value="mushroom"> Mushroom </label></p>
+   </fieldset>
+   <p><label>Preferred delivery time: <input type=time min="11:00" max="21:00" step="900" name="delivery"></label></p>
+   <p><label>Delivery instructions: <textarea name="comments"></textarea></label></p>
+   <p><button>Submit order</button></p>
+  </form>
+  </body>
+</html>
+    
+Log:
+147: Requesting "GET http://httpbin.org/forms/post HTTP/1.1" from httpbin.org
+147: Received "HTTP/1.1 200 OK" from httpbin.org
+147: cached, expires at 02 Mar 2024 19:48:00 GMT
+147: Responding "HTTP/1.1 200 OK"
+
+/* testcase: website get (1) end */
+
+/* testcase: website get (2) */
+GET http://www.duber.site/static/js/script.min.js HTTP/1.1
+Host: www.duber.site
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+Response:
+HTTP/1.1 200 OK
+Server: nginx/1.14.0 (Ubuntu)
+Date: Sat, 02 Mar 2024 21:04:41 GMT
+Content-Type: text/javascript
+Content-Length: 140295
+Connection: keep-alive
+Content-Disposition: inline; filename="script.min.js"
+Last-Modified: Tue, 06 Feb 2024 22:19:03 GMT
+
+Log:
+140: "GET http://www.duber.site/static/js/script.min.js HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 16:07:49 2024
+140: not in cache
+140: Requesting "GET http://www.duber.site/static/js/script.min.js HTTP/1.1" from www.duber.site
+140: Received "HTTP/1.1 200 OK" from www.duber.site
+140: cached, expires at Tue, 02 Mar 2024 19:48:00 GMT
+140: Responding "HTTP/1.1 200 OK"
+
+/* testcase: get chunked */
+GET http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx HTTP/1.1
+Host: www.httpwatch.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+Response:
+HTTP/1.1 200 OK
+Content-Type: image/jpeg; charset=utf-8
+Date: Sun, 03 Mar 2024 00:22:53 GMT
+Server: Microsoft-IIS/10.0
+Cache-Control: no-cache, no-store
+Expires: -1
+Pragma: no-cache
+Trailer: X-HttpWatch-Sample
+Transfer-Encoding: chunked
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Arr-Disable-Session-Affinity: True
+
+(unrecognizable binary format image)
+
+Log:
+463: "GET http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 19:22:53 2024
+463: not in cache
+463: Requesting "GET http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx HTTP/1.1" from www.httpwatch.com
+463: Received "HTTP/1.1 200 OK" from www.httpwatch.com
+463: NOTE Cache-Control: no-cache, no-store
+463: not cacheable because No-store/private specified in the header
+463: Responding "HTTP/1.1 200 OK"
+
+---------------GET END----------------
+
+---------------POST-------------------
+POST http://httpbin.org/post HTTP/1.1
+Host: httpbin.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 123
+Origin: http://httpbin.org
+Connection: keep-alive
+Referer: http://httpbin.org/forms/post
+Upgrade-Insecure-Requests: 1
+
+custname=Jerry&custtel=1234567890&custemail=123456789%40qq.com&size=medium&topping=bacon&topping=cheese&delivery=&comments=
+
+Response:
+HTTP/1.1 200 OK
+Date: Sun, 03 Mar 2024 00:25:45 GMT
+Content-Type: application/json
+Content-Length: 1025
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: http://httpbin.org
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {}, 
+  "data": "", 
+  "files": {}, 
+  "form": {
+    "comments": "", 
+    "custemail": "123456789@qq.com", 
+    "custname": "Jerry", 
+    "custtel": "1234567890", 
+    "delivery": "", 
+    "size": "medium", 
+    "topping": [
+      "bacon", 
+      "cheese"
+    ]
+  }, 
+  "headers": {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", 
+    "Accept-Encoding": "gzip, deflate", 
+    "Accept-Language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2", 
+    "Content-Length": "123", 
+    "Content-Type": "application/x-www-form-urlencoded", 
+    "Host": "httpbin.org", 
+    "Origin": "http://httpbin.org", 
+    "Referer": "http://httpbin.org/forms/post", 
+    "Upgrade-Insecure-Requests": "1", 
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0", 
+    "X-Amzn-Trace-Id": "Root=1-65e3c389-69c6e8d923092b7d63a3b8cf"
+  }, 
+  "json": null, 
+  "origin": "152.3.77.185", 
+  "url": "http://httpbin.org/post"
+}
+
+Log:
+469: "POST http://httpbin.org/post HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 19:25:45 2024
+469: Requesting "POST http://httpbin.org/post HTTP/1.1" from httpbin.org
+469: Responding "HTTP/1.1 200 OK"
+--------------POST END--------------------
+
+--------------CONNECT---------------------
+CONNECT www.facebook.com:443 HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Proxy-Connection: keep-alive
+Connection: keep-alive
+Host: www.facebook.com:443
+
+Response:
+HTTP/1.1 200 OK
+
+(encrypted content)
+
+Log:
+140: "CONNECT www.facebook.com:443 HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 19:43:36 2024
+140: Requesting "CONNECT www.facebook.com:443 HTTP/1.1" from www.facebook.com
+140: Received "HTTP/1.1 200 OK" from www.facebook.com
+-------------CONNECT END-----------------
+
+-----------GET ETAG REVALIDATE-----------
+GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1
+Host: vcm-38043.vm.duke.edu:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+
+Response:
+HTTP/1.1 200 OK
+Server: Werkzeug/3.0.1 Python/3.10.13
+Date: Sun, 03 Mar 2024 01:06:43 GMT
+Content-Type: application/json
+Content-Length: 26
+Etag: 1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29
+Cache-Control: no-cache
+Connection: close
+
+{
+  "data": "something"
+}
+
+Log:
+140: "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 20:12:04 2024
+140: not in cache
+140: Requesting "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from vcm-38043.vm.duke.edu
+140: Received "HTTP/1.1 200 OK" from vcm-38043.vm.duke.edu
+140: NOTE Etag: 1af17e73721dbe0c40011b82ed4bb1a7dbe3ce29
+140: NOTE Cache-Control: no-cache
+140: cached, but requires re-validation
+140: Responding "HTTP/1.1 200 OK"
+/* second time received */
+141: "GET http://vcm-38043.vm.duke.edu:5000/resource/etag HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 20:12:54 2024
+141: in cache, requires validation
+141: NOTE response validated in cache
+141: Received "HTTP/1.1 200 OK" from vcm-38043.vm.duke.edu
+-----------GET ETAG REVALIDATE END---------
+
+-------GET LAST MODIFIED REVALIDATE--------
+GET http://vcm-38043.vm.duke.edu:5000/resource/last_modified HTTP/1.1
+Host: vcm-38043.vm.duke.edu:5000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+
+Response:
+HTTP/1.1 200 OK
+Server: Werkzeug/3.0.1 Python/3.10.13
+Date: Sun, 03 Mar 2024 02:25:20 GMT
+Content-Type: application/json
+Content-Length: 26
+Last-Modified: Sun, 03 Mar 2024 02:25:20 GMT
+Connection: close
+
+{
+  "data": "something"
+}
+
+Log:
+142: "GET http://vcm-38043.vm.duke.edu:5000/resource/last_modified HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 21:17:26 2024
+142: not in cache
+142: Requesting "GET http://vcm-38043.vm.duke.edu:5000/resource/last_modified HTTP/1.1" from vcm-38043.vm.duke.edu
+142: Received "HTTP/1.1 200 OK" from vcm-38043.vm.duke.edu
+142: cached, expires at Sun, 03 Mar 2024 07:25:20 GMT
+142: Responding "HTTP/1.1 200 OK"
+/* second time received */
+146: "GET http://vcm-38043.vm.duke.edu:5000/resource/last_modified HTTP/1.1" from 127.0.0.1 @ Sat Mar 02 21:36:10 2024
+146: in cache, valid
+146: Responding "HTTP/1.1 200 OK"
+
+-----GET LAST MODIFIED REVALIDATE END------

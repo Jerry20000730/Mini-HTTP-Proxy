@@ -31,6 +31,7 @@ public:
     void logNote(int id, std::string note_content);
     void logWarning(int id, std::string warning_content);
     void logError(int id, std::string error_content);
+    void logTunnelClosed(int id);
 };
 
 #endif

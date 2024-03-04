@@ -45,7 +45,7 @@ public:
     void setEtag(std::string line);
     void setLastModified(std::string line);
     void seperateHeaderAndBody(std::string httpResponse);
-    void addResponseBody(std::vector<char> & responseChunkedBody);
+    void addResponseBody(std::vector<char> * responseChunkedBody);
     void addResponseBody(std::string responseStringBody);
     bool isValid();
     long long timeDifferenceInSeconds(std::string last_modified, std::string now);
